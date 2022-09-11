@@ -1,0 +1,10 @@
+{
+  "entryPointStrategy": "expand",
+  "entryPoints": [
+    "./src/index.ts"
+  ],
+  "externalPattern": [
+    "node_modules/**/*.ts"
+  ],
+  "out": "docs"
+}

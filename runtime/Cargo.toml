@@ -1,0 +1,85 @@
+[build-dependencies]
+substrate-wasm-builder = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+
+[dependencies]
+frame-benchmarking = { default-features = false, git = 'https://github.com/paritytech/substrate.git', optional = true }
+frame-executive = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+frame-support = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+frame-system = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+frame-system-benchmarking = { default-features = false, git = 'https://github.com/paritytech/substrate.git', optional = true }
+frame-system-rpc-runtime-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+hex-literal = { default-features = false, optional = true , version = '0.3' }
+fresh-credit-primitives = { default-features = false, path = '../primitives' }
+pallet-credits = { default-features = false, path = '../pallets/credits' }
+pallet-aura = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-balances = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-grandpa = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-randomness-collective-flip = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-sudo = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-timestamp = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-transaction-payment = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-transaction-payment-rpc-runtime-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+pallet-uniques = { default-features = false, path = '../pallets/uniques' }
+parity-scale-codec = { default-features = false, features = ['derive'], version = '2.0' }
+scale-info = { default-features = false, features = ['derive'], version = '1.0' }
+sp-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-block-builder = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-consensus-aura = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-core = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-inherents = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-offchain = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-runtime = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-session = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-transaction-pool = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-version = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+
+[features]
+default = ['std']
+runtime-benchmarks = [
+  'frame-benchmarking',
+  'frame-support/runtime-benchmarks',
+  'frame-system-benchmarking',
+  'frame-system/runtime-benchmarks',
+  'hex-literal',
+  'pallet-balances/runtime-benchmarks',
+  'pallet-timestamp/runtime-benchmarks',
+  'sp-runtime/runtime-benchmarks',
+]
+std = [
+  'frame-executive/std',
+  'frame-support/std',
+  'frame-system-rpc-runtime-api/std',
+  'frame-system/std',
+  'pallet-credits/std',
+  'pallet-aura/std',
+  'pallet-balances/std',
+  'pallet-grandpa/std',
+  'pallet-randomness-collective-flip/std',
+  'pallet-sudo/std',
+  'pallet-timestamp/std',
+  'pallet-transaction-payment-rpc-runtime-api/std',
+  'pallet-transaction-payment/std',
+  'pallet-uniques/std',
+  'parity-scale-codec/std',
+  'scale-info/std',
+  'sp-api/std',
+  'sp-block-builder/std',
+  'sp-consensus-aura/std',
+  'sp-core/std',
+  'sp-inherents/std',
+  'sp-offchain/std',
+  'sp-runtime/std',
+  'sp-session/std',
+  'sp-transaction-pool/std',
+  'sp-version/std',
+]
+
+[package]
+authors = ['Fresh Credit Team']
+edition = '2021'
+license = 'Apache-2.0'
+name = 'fresh-credit-runtime'
+version = '0.1.0'
+
+[package.metadata.docs.rs]
+targets = ['x86_64-unknown-linux-gnu']

@@ -1,0 +1,41 @@
+[dependencies]
+frame-support = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+frame-system = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+fresh-credit-primitives = { default-features = false, path = '../../primitives' }
+pallet-uniques = { default-features = false, path = '../uniques' }
+parity-scale-codec = { default-features = false, features = ['derive'], version = '2.0' }
+scale-info = { default-features = false, features = ['derive'], version = '1.0' }
+sp-io = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-runtime = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+sp-core = { default-features = false, git = 'https://github.com/paritytech/substrate.git' }
+
+[dev-dependencies]
+fresh-credit-primitives = { path = '../../primitives' }
+pallet-balances = { git = 'https://github.com/paritytech/substrate.git' }
+sp-core = { git = 'https://github.com/paritytech/substrate.git' }
+sp-keystore = { git = 'https://github.com/paritytech/substrate.git' }
+sp-runtime = { git = 'https://github.com/paritytech/substrate.git' }
+
+[features]
+default = ['std']
+std = [
+  'frame-support/std',
+  'frame-system/std',
+  'fresh-credit-primitives/std',
+  'pallet-uniques/std',
+  'parity-scale-codec/std',
+  'scale-info/std',
+  'sp-io/std',
+  'sp-runtime/std',
+]
+try-runtime = ['frame-support/try-runtime']
+
+[package]
+authors = ['Fresh Credit Team']
+edition = '2021'
+license = 'Apache-2.0'
+name = 'pallet-credits'
+version = '0.1.0'
+
+[package.metadata.docs.rs]
+targets = ['x86_64-unknown-linux-gnu']

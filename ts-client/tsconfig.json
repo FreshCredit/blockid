@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@polkadot/api/augment": ["./src/interfaces/augment-api.ts"],
+      "@polkadot/types/lookup": ["./src/interfaces/types-lookup.ts"]
+    }
+  },
+  "include": ["src/**/*", "scripts/fetch-metadata-parsed.ts"],
+  "$schema": "https://json.schemastore.org/tsconfig"
+}
