@@ -29,6 +29,7 @@ async function registerCredits(api: ApiPromise, signer: AddressOrPair, credits: 
           emailMsg: true,
           pushMsg: true
         }
+        
       });
       console.log('[Register User] = ', resp);
     }
