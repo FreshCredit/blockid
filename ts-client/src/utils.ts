@@ -6,8 +6,8 @@ import "./interfaces/augment-api";
 import "../src/interfaces/types-lookup";
 
 const WAIT_FOR_FINALIZATION = false;
-const NODE_ENDPOINT = 'ws://127.0.0.1:9944'
-// const NODE_ENDPOINT = 'ws://95.217.34.239:9944'
+// const NODE_ENDPOINT = 'ws://127.0.0.1:9944'
+const NODE_ENDPOINT = 'ws://95.217.34.239:9944'
 
 export async function connect(): Promise<{api: ApiPromise, keyring: Keyring, alice: AddressOrPair}> {
   const wsProvider = new WsProvider(NODE_ENDPOINT);

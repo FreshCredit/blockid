@@ -14,3 +14,7 @@
 
 # direnv cache
 .direnv
+
+#ts-client
+**/ts-client/node_modules/
+**/ts-client/yarn.lock

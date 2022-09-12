@@ -1,34 +1,44 @@
 
 export interface Credit {
   id: string,
-  name: string,
-  kind: string,
+  fname: string,
+  lname: string,
+  email: string,
+  mobile: string,
   photo: string,
 }
 
 export const TEST_CREDITS: Credit[] = [
   {
     id: "1",
-    name: "John Doe",
-    kind: "0",
+    fname: "John",
+    lname: "Doe",
+    email: "johndoe@mail.com",
+    mobile: "19371234567",
     photo: ""
   },
   {
     id: "2",
-    name: "Bobby Smith",
-    kind: "1",
+    fname: "Bobby",
+    lname: "Smith",
+    email: "bobbysmith@mail.com",
+    mobile: "19371234567",
     photo: ""
   },
   {
     id: "3",
-    name: "Kyle Abrams",
-    kind: "2",
+    fname: "Kyle",
+    lname: "Abrams",
+    email: "kyleabrams@mail.com",
+    mobile: "19371234567",
     photo: ""
   },
   {
     id: "4",
-    name: "David Simpson",
-    kind: "3",
+    fname: "David",
+    lname: "Simpson",
+    email: "davidsympson@mail.com",
+    mobile: "19371234567",
     photo: ""
   },
 ]

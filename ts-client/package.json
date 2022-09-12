@@ -16,7 +16,8 @@
     "credits:sell": "ts-node ./scripts/sell-card.ts"
   },
   "dependencies": {
-    "@polkadot/api": "^7.5.1"
+    "@polkadot/api": "^7.5.1",
+    "axios": "^0.27.2"
   },
   "devDependencies": {
     "@polkadot/typegen": "^7.5.1",

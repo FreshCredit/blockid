@@ -11,7 +11,7 @@ import type { BeefySignedCommitment } from '@polkadot/types/interfaces/beefy';
 import type { BlockHash } from '@polkadot/types/interfaces/chain';
 import type { PrefixedStorageKey } from '@polkadot/types/interfaces/childstate';
 import type { AuthorityId } from '@polkadot/types/interfaces/consensus';
-import type { ContractCallRequest, ContractExecResult, ContractInstantiateResult, InstantiateRequest } from '@polkadot/types/interfaces/contracts';
+import type { CodeUploadRequest, CodeUploadResult, ContractCallRequest, ContractExecResult, ContractInstantiateResult, InstantiateRequest } from '@polkadot/types/interfaces/contracts';
 import type { CreatedBlock } from '@polkadot/types/interfaces/engine';
 import type { EthAccount, EthCallRequest, EthFilter, EthFilterChanges, EthLog, EthReceipt, EthRichBlock, EthSubKind, EthSubParams, EthSyncStatus, EthTransaction, EthTransactionRequest, EthWork } from '@polkadot/types/interfaces/eth';
 import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
@@ -21,7 +21,7 @@ import type { StorageKind } from '@polkadot/types/interfaces/offchain';
 import type { FeeDetails, RuntimeDispatchInfo } from '@polkadot/types/interfaces/payment';
 import type { RpcMethods } from '@polkadot/types/interfaces/rpc';
 import type { AccountId, BlockNumber, H160, H256, H64, Hash, Header, Index, Justification, KeyValue, SignedBlock, StorageData } from '@polkadot/types/interfaces/runtime';
-import type { ReadProof, RuntimeVersion, TraceBlockResponse } from '@polkadot/types/interfaces/state';
+import type { MigrationStatusResult, ReadProof, RuntimeVersion, TraceBlockResponse } from '@polkadot/types/interfaces/state';
 import type { ApplyExtrinsicResult, ChainProperties, ChainType, Health, NetworkState, NodeRole, PeerInfo, SyncState } from '@polkadot/types/interfaces/system';
 import type { IExtrinsic, Observable } from '@polkadot/types/types';
 
@@ -68,6 +68,10 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
       epochAuthorship: AugmentedRpc<() => Observable<HashMap<AuthorityId, EpochAuthorship>>>;
     };
     beefy: {
+      /**
+       * Returns hash of the latest BEEFY finalized block as seen by this client.
+       **/
+       getFinalizedHead: AugmentedRpc<() => Observable<H256>>;
       /**
        * Returns the block most recently finalized by BEEFY, alongside side its justification.
        **/
@@ -133,7 +137,14 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
       /**
        * Executes a call to a contract
        **/
-      call: AugmentedRpc<(callRequest: ContractCallRequest | { origin?: any; dest?: any; value?: any; gasLimit?: any; storageDepositLimit?: any; inputData?: any } | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<ContractExecResult>>;
+      call: AugmentedRpc<(callRequest: ContractCallRequest | {
+          origin?: any;
+          dest?: any;
+          value?: any;
+          gasLimit?: any;
+          storageDepositLimit?: any;
+          inputData?: any;
+      } | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<ContractExecResult>>;
       /**
        * Returns the value under a specified storage key in a contract
        **/
@@ -141,11 +152,27 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
       /**
        * Instantiate a new contract
        **/
-      instantiate: AugmentedRpc<(request: InstantiateRequest | { origin?: any; value?: any; gasLimit?: any; storageDepositLimit?: any; code?: any; data?: any; salt?: any } | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<ContractInstantiateResult>>;
+      instantiate: AugmentedRpc<(request: InstantiateRequest | {
+          origin?: any;
+          value?: any;
+          gasLimit?: any;
+          storageDepositLimit?: any;
+          code?: any;
+          data?: any;
+          salt?: any;
+      } | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<ContractInstantiateResult>>;
       /**
        * Returns the projected time a given contract will be able to sustain paying its rent
        **/
       rentProjection: AugmentedRpc<(address: AccountId | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<Option<BlockNumber>>>;
+      /**
+       * Upload new code without instantiating a contract from it
+       **/
+      uploadCode: AugmentedRpc<(uploadRequest: CodeUploadRequest | {
+          origin?: any;
+          code?: any;
+          storageDepositLimit?: any;
+      } | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<CodeUploadResult>>;
     };
     engine: {
       /**
@@ -325,9 +352,9 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
     };
     grandpa: {
       /**
-       * Prove finality for the range (begin; end] hash.
+       * Prove finality for the given block number, returning the Justification for the last block in the set.
        **/
-      proveFinality: AugmentedRpc<(begin: BlockHash | string | Uint8Array, end: BlockHash | string | Uint8Array, authoritiesSetId?: u64 | AnyNumber | Uint8Array) => Observable<Option<EncodedFinalityProofs>>>;
+      proveFinality: AugmentedRpc<(blockNumber: BlockNumber | AnyNumber | Uint8Array) => Observable<Option<EncodedFinalityProofs>>>;
       /**
        * Returns the state of the current best round state as well as the ongoing background rounds
        **/
@@ -435,7 +462,7 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
       /**
        * Retrieves the storage for a key
        **/
-      getStorage: AugmentedRpc<<T = Codec>(key: StorageKey | string | Uint8Array | any, block?: Hash | Uint8Array | string) => Observable<T>>;
+      getStorage: AugmentedRpc<(<T = Codec>(key: StorageKey | string | Uint8Array | any, block?: Hash | Uint8Array | string) => Observable<T>)>;
       /**
        * Retrieves the storage hash
        **/
@@ -447,11 +474,11 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
       /**
        * Query historical storage entries (by key) starting from a start block
        **/
-      queryStorage: AugmentedRpc<<T = Codec[]>(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], fromBlock?: Hash | Uint8Array | string, toBlock?: Hash | Uint8Array | string) => Observable<[Hash, T][]>>;
+      queryStorage: AugmentedRpc<(<T = Codec[]>(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], fromBlock?: Hash | Uint8Array | string, toBlock?: Hash | Uint8Array | string) => Observable<[Hash, T][]>)>;
       /**
        * Query storage entries (by key) starting at block hash given as the second parameter
        **/
-      queryStorageAt: AugmentedRpc<<T = Codec[]>(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], at?: Hash | Uint8Array | string) => Observable<T>>;
+      queryStorageAt: AugmentedRpc<(<T = Codec[]>(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], at?: Hash | Uint8Array | string) => Observable<T>)>;
       /**
        * Retrieves the runtime version via subscription
        **/
@@ -459,11 +486,15 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
       /**
        * Subscribes to storage changes for the provided keys
        **/
-      subscribeStorage: AugmentedRpc<<T = Codec[]>(keys?: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[]) => Observable<T>>;
+      subscribeStorage: AugmentedRpc<(<T = Codec[]>(keys?: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[]) => Observable<T>)>;
       /**
        * Provides a way to trace the re-execution of a single block
        **/
       traceBlock: AugmentedRpc<(block: Hash | string | Uint8Array, targets: Option<Text> | null | object | string | Uint8Array, storageKeys: Option<Text> | null | object | string | Uint8Array, methods: Option<Text> | null | object | string | Uint8Array) => Observable<TraceBlockResponse>>;
+      /**
+       * Check current migration state
+       **/
+      trieMigrationStatus: AugmentedRpc<(at?: BlockHash | string | Uint8Array) => Observable<MigrationStatusResult>>;
     };
     syncstate: {
       /**
