@@ -16,34 +16,34 @@ use sp_io::TestExternalities;
 use sp_keystore::{testing::KeyStore, KeystoreExt, SyncCryptoStore};
 use sp_runtime::RuntimeAppPublic;
 
-#[test]
-fn mint_cards_generates_class_and_cards() {
-  test_ext().execute_with(|| {
-    System::set_block_number(1);
+// #[test]
+// fn mint_cards_generates_class_and_cards() {
+//   test_ext().execute_with(|| {
+//     System::set_block_number(1);
 
-    dbg!(Balances::free_balance(alice()));
-    dbg!(Balances::usable_balance(alice()));
+//     dbg!(Balances::free_balance(alice()));
+//     dbg!(Balances::usable_balance(alice()));
 
-    Credits::submit_credit_application(Origin::signed(alice()), credit_application(bob()))
-      .unwrap();
+//     Credits::submit_credit_application(Origin::signed(alice()), credit_application(bob()))
+//       .unwrap();
 
-    let credit_id = System::events()
-      .iter()
-      .filter_map(|record| {
-        let event = &record.event;
-        if let Event::Credits(crate::Event::CreditApplicationSubmitted { id, .. }) = event {
-          Some(*id)
-        } else {
-          None
-        }
-      })
-      .next()
-      .unwrap();
+//     let credit_id = System::events()
+//       .iter()
+//       .filter_map(|record| {
+//         let event = &record.event;
+//         if let Event::Credits(crate::Event::CreditApplicationSubmitted { id, .. }) = event {
+//           Some(*id)
+//         } else {
+//           None
+//         }
+//       })
+//       .next()
+//       .unwrap();
 
-    Credits::approve_application(Origin::root(), credit_id).unwrap();
-    Credits::mint_cards(Origin::signed(alice()), credit_id).unwrap();
+//     Credits::approve_application(Origin::root(), credit_id).unwrap();
+//     Credits::mint_cards(Origin::signed(alice()), credit_id).unwrap();
 
-    dbg!(System::events());
+//     dbg!(System::events());
 
     // Credits::mint_cards(Origin::signed(alice()), credit()).unwrap();
     // assert_eq!(Credits::class_attributes(&0).unwrap(), credit());
@@ -77,8 +77,8 @@ fn mint_cards_generates_class_and_cards() {
     //     votes: 0,
     //   }
     // );
-  });
-}
+//   });
+// }
 
 // #[test]
 // fn offchain_worker_submits_unsigned_transaction_on_chain() {
@@ -214,11 +214,11 @@ fn mint_cards_generates_class_and_cards() {
 //   }
 // }
 
-fn credit_application<T>(account: T) -> CreditApplication<T> {
-  CreditApplication {
-    name: "John Doe".into(),
-    applicant_account: account,
-    creditKind: 0,
-    photo: None,
-  }
-}
+// fn credit_application<T>(account: T) -> CreditApplication<T> {
+//   CreditApplication {
+//     name: "John Doe".into(),
+//     applicant_account: account,
+//     creditKind: 1,
+//     photo: None,
+//   }
+// }
