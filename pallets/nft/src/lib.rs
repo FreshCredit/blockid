@@ -49,8 +49,8 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		/// A new NFT was created.
-		NFTCreated {
+		/// A new NFT was minted.
+		NFTMinted {
 			nft_id: crate::nft::NFTId,
 			owner: T::AccountId,
 			offchain_data: crate::nft::U8BoundedVec<T::NFTOffchainDataLimit>,
@@ -78,11 +78,11 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 
-		/// Create a new NFT with the provided details. An ID will be auto
+		/// Mint a new NFT with the provided details. An ID will be auto
 		/// generated and logged as an event, The caller of this function
 		/// will become the owner of the new NFT.
 		#[pallet::weight(Weight::from_ref_time(10_000) + T::DbWeight::get().writes(1))]
-		pub fn create_nft(
+		pub fn mint_nft(
 			origin: OriginFor<T>,
 			offchain_data: crate::nft::U8BoundedVec<T::NFTOffchainDataLimit>,
 		) -> DispatchResultWithPostInfo {
@@ -96,7 +96,7 @@ pub mod pallet {
 			);
 			// Execute
 			Nfts::<T>::insert(nft_id, nft);
-			let event = Event::NFTCreated {
+			let event = Event::NFTMinted {
 				nft_id,
 				owner: who,
 				offchain_data,
