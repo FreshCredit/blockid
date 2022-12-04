@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: freshcredit
+  name: blockid
+spec:
+  ports:
+    - name: blocksid-charlie
+      port: 40335
+      targetPort: 40335
+      protocol: TCP
+    - name: ws-port
+      port: 8846
+      targetPort: 8846
+      protocol: TCP
+    - name: wasm-port
+      port: 30345
+      targetPort: 30345
+      protocol: TCP
+    - name: wasm-ws-port
+      port: 9979
+      targetPort: 9979
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: blockid
