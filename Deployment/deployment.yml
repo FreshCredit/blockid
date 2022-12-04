@@ -18,7 +18,7 @@ spec:
         - name: blockid
           image: 293637174735.dkr.ecr.us-east-1.amazonaws.com/blockid:latest
           ports:
-            - name: blocksid-charlie
+            - name: charlie
               containerPort: 40335
               protocol: TCP
             - name: ws-port
