@@ -5,7 +5,7 @@ metadata:
   name: blockid
 spec:
   ports:
-    - name: blocksid-charlie
+    - name: charlie
       port: 40335
       targetPort: 40335
       protocol: TCP
