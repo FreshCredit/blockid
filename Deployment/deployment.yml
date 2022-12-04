@@ -18,7 +18,17 @@ spec:
         - name: blockid
           image: 293637174735.dkr.ecr.us-east-1.amazonaws.com/blockid:latest
           ports:
-            - containerPort: 8080
+            - name: blocksid-charlie
+              containerPort: 40335
+              protocol: TCP
+            - name: ws-port
+              containerPort: 8846
+              protocol: TCP
+            - name: wasm-port
+              containerPort: 30345
+              protocol: TCP
+            - name: wasm-ws-port
+              containerPort: 9979
               protocol: TCP
           resources: {}
           terminationMessagePath: /dev/termination-log
