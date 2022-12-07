@@ -156,8 +156,7 @@ pub mod pallet {
 			let next_id = nft_id
 				.checked_add(1)
 				.expect("If u32 is not enough we should crash for safety; qed.");
-			NextNFTId::<T>::put(next_id);
-	
+			NextNFTId::<T>::put(next_id);	
 			nft_id
 		}
 	}
