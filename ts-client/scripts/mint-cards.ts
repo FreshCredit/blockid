@@ -6,14 +6,14 @@ import "../src/interfaces/augment-api";
 (async () => {
   let { api, alice } = await connect();
 
-  const credits = await api.query.credits.credits.entries();
+  const credits = await api.query.nft.nfts.entries();
   for (const entry of credits) {
     if (entry[1].isSome) {
       const credit = entry[1].unwrap();
       console.log(`hahahahahahahahahaah ${credit.name.toUtf8()} ${credit}`);
       const id = entry[0].args[0];
       if (!credit.cardsMinted.toHuman()) {
-        const tx = api.tx.credits.mintCards(id);
+        const tx = api.tx.nft.mintNft(id);
         await sendTransactionAsync(api, alice, tx, `mint cards for ${credit.name.toUtf8()}`);
       } else {
         console.log(`skipping ${credit.name.toUtf8()} because they already have cards minted`);
