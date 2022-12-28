@@ -12,32 +12,6 @@ The user’s BlockID® is the key and access point for the user to control and c
 
 This is the parachain for BlockID®, which is to mint the NFT, which is a kind of a card that includes the user's credit-related information after registering on the FreshCredit® platform.
 
-The "ts-client" directory is for the interface, which lets the users communicate with the parachain.
-
-    - Edit dummy data
-
-        You can edit "ts-client/scripts/credits.ts to change the list of the dummy data of the users' information to be uploaded.
-
-    - Register the credit information
-
-        In the ts-client directory, run:
-
-            yarn credits:register
-
-        This will:
-
-            Read credit information from credits.ts
-            Submit a registration application for each user
-            Approve the registration for each user (placeholder for KYC process)
-    
-    - Mint the NFTs
-
-        yarn credits:mint
-
-        This will mint various NFTs for each user. The NFTs will be initially owned by the system account.
-
-    - View on-chain summary
-
-        yarn credits:summary
-
-        This will display a short summary about each registered users, the number of NFTs available for this user, and a random NFT, pulled from the blockchain state.
+The functions the users can call via Polkadot.js are kinds of "Set/Get" named as below;
+    Set : "mint_nft", "burn_nft", "transfer_nft"
+    Get : "get_next_nft_id"
