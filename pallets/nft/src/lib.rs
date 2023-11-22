@@ -2,162 +2,130 @@
 
 /// Edit this file to define custom logic or remove it if it is not needed.
 /// Learn more about FRAME and the core library of Substrate FRAME pallets:
-/// <https://docs.substrate.io/v3/runtime/frame>
+/// <https://docs.substrate.io/reference/frame-pallets/>
 pub use pallet::*;
 
-pub mod nft;
-use sp_runtime::traits::{StaticLookup};
+#[cfg(test)]
+mod mock;
 
+#[cfg(test)]
+mod tests;
+
+#[cfg(feature = "runtime-benchmarks")]
+mod benchmarking;
+pub mod weights;
+pub use weights::*;
 
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
-	use frame_support::{dispatch::DispatchResultWithPostInfo, pallet_prelude::*};
+	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 
+	#[pallet::pallet]
+	pub struct Pallet<T>(_);
+
+	/// Configure the pallet by specifying the parameters and types on which it depends.
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
+		/// Type representing the weight of this pallet
+		type WeightInfo: WeightInfo;
 
-		/// Maximum offchain data length.
-		#[pallet::constant]
-		type NFTOffchainDataLimit: Get<u32>;
+		type CollectionId: Member + Parameter + MaxEncodedLen + Copy + Incrementable;
+		type ItemId: Member + Parameter + MaxEncodedLen + Copy;
+		type Currency: ReservableCurrency<Self::AccountId>;
+		type ForceOrigin: EnsureOrigin<Self::RuntimeOrigin>;
+		type CreateOrigin: EnsureOriginWithArg<Self::RuntimeOrigin, Self::CollectionId, Success = Self::AccountId>;
+		type Locker: Locker<Self::CollectionId, Self::ItemId>;
+		type CollectionDeposit: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type ItemDeposit: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type MetadataDepositBase: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type AttributeDepositBase: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type DepositPerByte: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type StringLimit: Get<u32>;
+		type KeyLimit: Get<u32>;
+		type ValueLimit: Get<u32>;
+		type ApprovalsLimit: Get<u32>;
+		type ItemAttributesApprovalsLimit: Get<u32>;
+		type MaxTips: Get<u32>;
+		type MaxDeadlineDuration: Get<BlockNumberFor<Self>>;
+		type MaxAttributesPerCall: Get<u32>;
+		type Features: Get<PalletFeatures>;
+		type OffchainSignature: Verify<Signer = Self::OffchainPublic> + Parameter;
+		type OffchainPublic: IdentifyAccount<AccountId = Self::AccountId>;
 	}
 
-	#[pallet::pallet]
-	#[pallet::generate_store(pub(super) trait Store)]
-	pub struct Pallet<T>(_);
-
-	/// Counter for NFT ids.
+	// The pallet's runtime storage items.
+	// https://docs.substrate.io/main-docs/build/runtime-storage/
 	#[pallet::storage]
-	#[pallet::getter(fn next_nft_id)]
-	pub type NextNFTId<T: Config> = StorageValue<_, crate::nft::NFTId, ValueQuery>;
+	#[pallet::getter(fn something)]
+	// Learn more about declaring storage items:
+	// https://docs.substrate.io/main-docs/build/runtime-storage/#declaring-storage-items
+	pub type Something<T> = StorageValue<_, u32>;
 
-	/// Data related to NFTs.
-	#[pallet::storage]
-	#[pallet::getter(fn nfts)]
-	pub type Nfts<T: Config> = StorageMap<
-		_,
-		Blake2_128Concat,
-		crate::nft::NFTId,
-		crate::nft::NFTData<T::AccountId, T::NFTOffchainDataLimit>,
-		OptionQuery,
-	>;
-
-	
+	// Pallets use events to inform users when important changes are made.
+	// https://docs.substrate.io/main-docs/build/events-errors/
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		/// A new NFT was minted.
-		NFTMinted {
-			nft_id: crate::nft::NFTId,
-			owner: T::AccountId,
-			offchain_data: crate::nft::U8BoundedVec<T::NFTOffchainDataLimit>,
-		},
-		/// An NFT was burned.
-		NFTBurned { nft_id: crate::nft::NFTId },
-		/// An NFT was transferred to someone else.
-		NFTTransferred { nft_id: crate::nft::NFTId, sender: T::AccountId, recipient: T::AccountId },
+		/// Event documentation should end with an array that provides descriptive names for event
+		/// parameters. [something, who]
+		SomethingStored { something: u32, who: T::AccountId },
 	}
 
 	// Errors inform users that something went wrong.
 	#[pallet::error]
 	pub enum Error<T> {
-		/// No NFT was found with that NFT id.
-		NFTNotFound,
-		/// This function can only be called by the owner of the NFT.
-		NotTheNFTOwner,
-		/// Operation is not allowed because the NFT is owned by the caller.
-		CannotTransferNFTsToYourself,
+		/// Error names should be descriptive.
+		NoneValue,
+		/// Errors should have helpful documentation associated with them.
+		StorageOverflow,
 	}
 
-	#[pallet::hooks]
-	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {}
-
+	// Dispatchable functions allows users to interact with the pallet and invoke state changes.
+	// These functions materialize as "extrinsics", which are often compared to transactions.
+	// Dispatchable functions must be annotated with a weight and must return a DispatchResult.
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
-
-		/// Mint a new NFT with the provided details. An ID will be auto
-		/// generated and logged as an event, The caller of this function
-		/// will become the owner of the new NFT.
-		#[pallet::weight(Weight::from_ref_time(10_000) + T::DbWeight::get().writes(1))]
-		pub fn mint_nft(
-			origin: OriginFor<T>,
-			offchain_data: crate::nft::U8BoundedVec<T::NFTOffchainDataLimit>,
-		) -> DispatchResultWithPostInfo {
+		/// An example dispatchable that takes a singles value as a parameter, writes the value to
+		/// storage and emits an event. This function must be dispatched by a signed extrinsic.
+		#[pallet::call_index(0)]
+		#[pallet::weight(T::WeightInfo::do_something())]
+		pub fn do_something(origin: OriginFor<T>, something: u32) -> DispatchResult {
+			// Check that the extrinsic was signed and get the signer.
+			// This function will return an error if the extrinsic is not signed.
+			// https://docs.substrate.io/main-docs/build/origins/
 			let who = ensure_signed(origin)?;
-			let mut next_nft_id = None;
 
-			let nft_id = next_nft_id.unwrap_or_else(|| Self::get_next_nft_id());
-			let nft = crate::nft::NFTData::new_default(
-				who.clone(),
-				offchain_data.clone(),
-			);
-			// Execute
-			Nfts::<T>::insert(nft_id, nft);
-			let event = Event::NFTMinted {
-				nft_id,
-				owner: who,
-				offchain_data,
+			// Update storage.
+			<Something<T>>::put(something);
 
-			};
-			Self::deposit_event(event);
-
-			Ok(().into())
+			// Emit an event.
+			Self::deposit_event(Event::SomethingStored { something, who });
+			// Return a successful DispatchResultWithPostInfo
+			Ok(())
 		}
 
-		#[pallet::weight(Weight::from_ref_time(10_000) + T::DbWeight::get().writes(1))]
-		pub fn burn_nft(origin: OriginFor<T>, nft_id: crate::nft::NFTId) -> DispatchResultWithPostInfo {
-			let who = ensure_signed(origin)?;
-			let nft = Nfts::<T>::get(nft_id).ok_or(Error::<T>::NFTNotFound)?;
+		/// An example dispatchable that may throw a custom error.
+		#[pallet::call_index(1)]
+		#[pallet::weight(T::WeightInfo::cause_error())]
+		pub fn cause_error(origin: OriginFor<T>) -> DispatchResult {
+			let _who = ensure_signed(origin)?;
 
-			// Checks
-			ensure!(nft.owner == who, Error::<T>::NotTheNFTOwner);
-			// Execute
-			Nfts::<T>::remove(nft_id);
-			Self::deposit_event(Event::NFTBurned { nft_id });
-
-			Ok(().into())
-		}
-
-		#[pallet::weight(Weight::from_ref_time(10_000) + T::DbWeight::get().writes(1))]
-		pub fn transfer_nft(
-			origin: OriginFor<T>,
-			nft_id: crate::nft::NFTId,
-			recipient: <T::Lookup as StaticLookup>::Source,
-		) -> DispatchResultWithPostInfo {
-			let who = ensure_signed(origin)?;
-			let recipient = T::Lookup::lookup(recipient)?;
-
-			Nfts::<T>::try_mutate(nft_id, |x| -> DispatchResult {
-				let nft = x.as_mut().ok_or(Error::<T>::NFTNotFound)?;
-
-				// Checks
-				ensure!(nft.owner == who, Error::<T>::NotTheNFTOwner);
-				ensure!(nft.owner != recipient, Error::<T>::CannotTransferNFTsToYourself);
-				// Execute
-				nft.owner = recipient.clone();
-
-				Ok(().into())
-			})?;
-			// Execute
-			let event = Event::NFTTransferred { nft_id, sender: who, recipient };
-			Self::deposit_event(event);
-
-			Ok(().into())
-		}
-
-	}
-
-	impl<T: Config> Pallet<T> {
-		fn get_next_nft_id() -> crate::nft::NFTId {
-			let nft_id = NextNFTId::<T>::get();
-			let next_id = nft_id
-				.checked_add(1)
-				.expect("If u32 is not enough we should crash for safety; qed.");
-			NextNFTId::<T>::put(next_id);	
-			nft_id
+			// Read a value from storage.
+			match <Something<T>>::get() {
+				// Return an error if the value has not been set.
+				None => return Err(Error::<T>::NoneValue.into()),
+				Some(old) => {
+					// Increment the value read from storage; will error in the event of overflow.
+					let new = old.checked_add(1).ok_or(Error::<T>::StorageOverflow)?;
+					// Update the value in storage with the incremented result.
+					<Something<T>>::put(new);
+					Ok(())
+				},
+			}
 		}
 	}
 }
