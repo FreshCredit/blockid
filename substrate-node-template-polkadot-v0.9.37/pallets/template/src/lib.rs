@@ -13,14 +13,16 @@ mod tests;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
+pub mod weights;
+pub use weights::*;
 
 #[frame_support::pallet]
 pub mod pallet {
+	use super::*;
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
 
 	#[pallet::pallet]
-	#[pallet::generate_store(pub(super) trait Store)]
 	pub struct Pallet<T>(_);
 
 	/// Configure the pallet by specifying the parameters and types on which it depends.
@@ -28,6 +30,31 @@ pub mod pallet {
 	pub trait Config: frame_system::Config {
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
+		/// Type representing the weight of this pallet
+		type WeightInfo: WeightInfo;
+
+		type CollectionId: Member + Parameter + MaxEncodedLen + Copy + Incrementable;
+		type ItemId: Member + Parameter + MaxEncodedLen + Copy;
+		type Currency: ReservableCurrency<Self::AccountId>;
+		type ForceOrigin: EnsureOrigin<Self::RuntimeOrigin>;
+		type CreateOrigin: EnsureOriginWithArg<Self::RuntimeOrigin, Self::CollectionId, Success = Self::AccountId>;
+		type Locker: Locker<Self::CollectionId, Self::ItemId>;
+		type CollectionDeposit: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type ItemDeposit: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type MetadataDepositBase: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type AttributeDepositBase: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type DepositPerByte: Get<<<Self as Config<I>>::Currency as Currency<<Self as SystemConfig>::AccountId>>::Balance>;
+		type StringLimit: Get<u32>;
+		type KeyLimit: Get<u32>;
+		type ValueLimit: Get<u32>;
+		type ApprovalsLimit: Get<u32>;
+		type ItemAttributesApprovalsLimit: Get<u32>;
+		type MaxTips: Get<u32>;
+		type MaxDeadlineDuration: Get<BlockNumberFor<Self>>;
+		type MaxAttributesPerCall: Get<u32>;
+		type Features: Get<PalletFeatures>;
+		type OffchainSignature: Verify<Signer = Self::OffchainPublic> + Parameter;
+		type OffchainPublic: IdentifyAccount<AccountId = Self::AccountId>;
 	}
 
 	// The pallet's runtime storage items.
@@ -65,7 +92,7 @@ pub mod pallet {
 		/// An example dispatchable that takes a singles value as a parameter, writes the value to
 		/// storage and emits an event. This function must be dispatched by a signed extrinsic.
 		#[pallet::call_index(0)]
-		#[pallet::weight(10_000 + T::DbWeight::get().writes(1).ref_time())]
+		#[pallet::weight(T::WeightInfo::do_something())]
 		pub fn do_something(origin: OriginFor<T>, something: u32) -> DispatchResult {
 			// Check that the extrinsic was signed and get the signer.
 			// This function will return an error if the extrinsic is not signed.
@@ -83,7 +110,7 @@ pub mod pallet {
 
 		/// An example dispatchable that may throw a custom error.
 		#[pallet::call_index(1)]
-		#[pallet::weight(10_000 + T::DbWeight::get().reads_writes(1,1).ref_time())]
+		#[pallet::weight(T::WeightInfo::cause_error())]
 		pub fn cause_error(origin: OriginFor<T>) -> DispatchResult {
 			let _who = ensure_signed(origin)?;
 
