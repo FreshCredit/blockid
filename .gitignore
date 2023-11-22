@@ -16,3 +16,7 @@
 .DS_Store
 .idea
 .vscode
+
+/substrate/.target
+/.target
+/polkadot/.target
