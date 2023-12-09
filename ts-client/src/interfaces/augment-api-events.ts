@@ -5,17 +5,16 @@ import type { ApiTypes } from '@polkadot/api-base/types';
 import type { Bytes, Null, Option, Result, Vec, bool, u128, u32, u64 } from '@polkadot/types-codec';
 import type { ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
-import type { FrameSupportTokensMiscBalanceStatus, FrameSupportWeightsDispatchInfo, MetaCreditPrimitivesCreditApplication, MetaCreditPrimitivesCreditCardClass, MetaCreditPrimitivesCardId, SpFinalityGrandpaAppPublic, SpRuntimeDispatchError } from '@polkadot/types/lookup';
+import type { FrameSupportTokensMiscBalanceStatus, FrameSupportWeightsDispatchInfo, SpFinalityGrandpaAppPublic, SpRuntimeDispatchError, MetaAthletePrimitivesAthleteApplication, MetaAthletePrimitivesCardId, MetaAthletePrimitivesAthleteCardClass } from '@polkadot/types/lookup';
 
 declare module '@polkadot/api-base/types/events' {
   export interface AugmentedEvents<ApiType extends ApiTypes> {
-    credits: {
-      CreditApplicationApproved: AugmentedEvent<ApiType, [u64]>;
-      CreditApplicationSubmitted: AugmentedEvent<ApiType, [u64, MetaCreditPrimitivesCreditApplication]>;
-      CardBought: AugmentedEvent<ApiType, [H256, MetaCreditPrimitivesCardId, AccountId32, u128]>;
-      CardMinted: AugmentedEvent<ApiType, [H256, MetaCreditPrimitivesCardId, MetaCreditPrimitivesCreditApplication,  MetaCreditPrimitivesCreditCardClass]>;
-      // CardMinted: AugmentedEvent<ApiType, [H256, MetaCreditPrimitivesCreditApplication, MetaCreditPrimitivesCreditApplication,  MetaCreditPrimitivesCreditCardClass]>;
-      CardSold: AugmentedEvent<ApiType, [H256, MetaCreditPrimitivesCardId, AccountId32, u128]>;
+    athletes: {
+      AthleteApplicationApproved: AugmentedEvent<ApiType, [u64]>;
+      AthleteApplicationSubmitted: AugmentedEvent<ApiType, [u64, MetaAthletePrimitivesAthleteApplication]>;
+      CardBought: AugmentedEvent<ApiType, [H256, MetaAthletePrimitivesCardId, AccountId32, u128]>;
+      CardMinted: AugmentedEvent<ApiType, [H256, MetaAthletePrimitivesCardId, MetaAthletePrimitivesAthleteCardClass]>;
+      CardSold: AugmentedEvent<ApiType, [H256, MetaAthletePrimitivesCardId, AccountId32, u128]>;
       /**
        * Generic event
        **/

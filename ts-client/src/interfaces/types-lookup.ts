@@ -7,71 +7,76 @@ declare module '@polkadot/types/lookup' {
   import type { AccountId32, Call, H256, MultiAddress, Perbill } from '@polkadot/types/interfaces/runtime';
   import type { Event } from '@polkadot/types/interfaces/system';
 
-  /** @name MetaCreditPrimitivesCredit (1) */
-  export interface MetaCreditPrimitivesCredit extends Struct {
+  /** @name MetaAthletePrimitivesAthlete (1) */
+  export interface MetaAthletePrimitivesAthlete extends Struct {
     readonly name: Bytes;
-    readonly creditAccount: AccountId32;
-    readonly creditKind: Bytes;
-    readonly photo: Option<MetaCreditPrimitivesOffchainRef>;
+    readonly athleteAccount: AccountId32;
+    readonly weight: MetaAthletePrimitivesWeight;
+    readonly height: MetaAthletePrimitivesHeight;
+    readonly photo: Option<MetaAthletePrimitivesOffchainRef>;
     readonly cardsMinted: bool;
   }
 
-  /** @name MetaCreditPrimitivesKind (6) */
-  export interface MetaCreditPrimitivesKind extends Struct {
-    readonly kind: u32;
+  /** @name MetaAthletePrimitivesWeight (6) */
+  export interface MetaAthletePrimitivesWeight extends Struct {
+    readonly grams: u32;
   }
 
-  /** @name MetaCreditPrimitivesOffchainRef (10) */
-  export interface MetaCreditPrimitivesOffchainRef extends Struct {
+  /** @name MetaAthletePrimitivesHeight (8) */
+  export interface MetaAthletePrimitivesHeight extends Struct {
+    readonly millimeters: u32;
+  }
+
+  /** @name MetaAthletePrimitivesOffchainRef (10) */
+  export interface MetaAthletePrimitivesOffchainRef extends Struct {
     readonly hash_: H256;
   }
 
-  /** @name MetaCreditPrimitivesCard (13) */
-  export interface MetaCreditPrimitivesCard extends Struct {
+  /** @name MetaAthletePrimitivesCard (13) */
+  export interface MetaAthletePrimitivesCard extends Struct {
     readonly owner: Option<AccountId32>;
-    readonly id: MetaCreditPrimitivesCardId;
-    readonly cardInfo: MetaCreditPrimitivesCreditApplication;
-    readonly tier: MetaCreditPrimitivesCreditCardClass;
+    readonly id: MetaAthletePrimitivesCardId;
+    readonly tier: MetaAthletePrimitivesAthleteCardClass;
     readonly value: u128;
     readonly isOnMarket: bool;
   }
 
-  /** @name MetaCreditPrimitivesCardId (16) */
-  export interface MetaCreditPrimitivesCardId extends Struct {
-    readonly creditId: u64;
+  /** @name MetaAthletePrimitivesCardId (16) */
+  export interface MetaAthletePrimitivesCardId extends Struct {
+    readonly athleteId: u64;
     readonly instanceId: u32;
   }
 
-  /** @name MetaCreditPrimitivesCreditCardClass (17) */
-  export interface MetaCreditPrimitivesCreditCardClass extends Enum {
+  /** @name MetaAthletePrimitivesAthleteCardClass (17) */
+  export interface MetaAthletePrimitivesAthleteCardClass extends Enum {
     readonly isGold: boolean;
-    readonly isPlatinum: boolean;
+    readonly isSilver: boolean;
     readonly isDiamond: boolean;
-    readonly type: 'Gold' | 'Platinum' | 'Diamond';
+    readonly type: 'Gold' | 'Silver' | 'Diamond';
   }
 
-  /** @name MetaCreditPrimitivesCreditApplication (18) */
-  export interface MetaCreditPrimitivesCreditApplication extends Struct {
+  /** @name MetaAthletePrimitivesAthleteApplication (18) */
+  export interface MetaAthletePrimitivesAthleteApplication extends Struct {
     readonly name: Bytes;
     readonly applicantAccount: AccountId32;
-    readonly creditKind: Bytes;
-    readonly photo: Option<MetaCreditPrimitivesOffchainRef>;
+    readonly weight: MetaAthletePrimitivesWeight;
+    readonly height: MetaAthletePrimitivesHeight;
+    readonly photo: Option<MetaAthletePrimitivesOffchainRef>;
   }
 
-  /** @name PalletCreditsCall (19) */
-  export interface PalletCreditsCall extends Enum {
-    readonly isSubmitCreditApplication: boolean;
-    readonly asSubmitCreditApplication: {
-      readonly application: MetaCreditPrimitivesCreditApplication;
+  /** @name PalletAthletesCall (19) */
+  export interface PalletAthletesCall extends Enum {
+    readonly isSubmitAthleteApplication: boolean;
+    readonly asSubmitAthleteApplication: {
+      readonly application: MetaAthletePrimitivesAthleteApplication;
     } & Struct;
     readonly isApproveApplication: boolean;
     readonly asApproveApplication: {
-      readonly creditId: u64;
+      readonly athleteId: u64;
     } & Struct;
     readonly isMintCards: boolean;
     readonly asMintCards: {
-      readonly creditId: u64;
-      readonly cardInfo: MetaCreditPrimitivesCreditApplication;
+      readonly athleteId: u64;
     } & Struct;
     readonly isBuyCard: boolean;
     readonly asBuyCard: {
@@ -81,65 +86,64 @@ declare module '@polkadot/types/lookup' {
     readonly asSellCard: {
       readonly cardHash: H256;
     } & Struct;
-    readonly type: 'SubmitCreditApplication' | 'ApproveApplication' | 'MintCards' | 'BuyCard' | 'SellCard';
+    readonly type: 'SubmitAthleteApplication' | 'ApproveApplication' | 'MintCards' | 'BuyCard' | 'SellCard';
   }
 
-  /** @name PalletCreditsEvent (20) */
-  export interface PalletCreditsEvent extends Enum {
-    readonly isCreditApplicationSubmitted: boolean;
-    readonly asCreditApplicationSubmitted: {
+  /** @name PalletAthletesEvent (20) */
+  export interface PalletAthletesEvent extends Enum {
+    readonly isAthleteApplicationSubmitted: boolean;
+    readonly asAthleteApplicationSubmitted: {
       readonly id: u64;
-      readonly application: MetaCreditPrimitivesCreditApplication;
+      readonly application: MetaAthletePrimitivesAthleteApplication;
     } & Struct;
-    readonly isCreditApplicationApproved: boolean;
-    readonly asCreditApplicationApproved: {
+    readonly isAthleteApplicationApproved: boolean;
+    readonly asAthleteApplicationApproved: {
       readonly id: u64;
     } & Struct;
     readonly isCardMinted: boolean;
     readonly asCardMinted: {
       readonly cardHash: H256;
-      readonly cardId: MetaCreditPrimitivesCardId;
-      readonly cardInfo: MetaCreditPrimitivesCreditApplication;
-      readonly tier: MetaCreditPrimitivesCreditCardClass;
+      readonly cardId: MetaAthletePrimitivesCardId;
+      readonly tier: MetaAthletePrimitivesAthleteCardClass;
     } & Struct;
     readonly isCardSold: boolean;
     readonly asCardSold: {
       readonly cardHash: H256;
-      readonly cardId: MetaCreditPrimitivesCardId;
+      readonly cardId: MetaAthletePrimitivesCardId;
       readonly who: AccountId32;
       readonly value: u128;
     } & Struct;
     readonly isCardBought: boolean;
     readonly asCardBought: {
       readonly cardHash: H256;
-      readonly cardId: MetaCreditPrimitivesCardId;
+      readonly cardId: MetaAthletePrimitivesCardId;
       readonly who: AccountId32;
       readonly value: u128;
     } & Struct;
-    readonly type: 'CreditApplicationSubmitted' | 'CreditApplicationApproved' | 'CardMinted' | 'CardSold' | 'CardBought';
+    readonly type: 'AthleteApplicationSubmitted' | 'AthleteApplicationApproved' | 'CardMinted' | 'CardSold' | 'CardBought';
   }
 
-  /** @name MetaCreditPrimitivesInitialCardValues (21) */
-  export interface MetaCreditPrimitivesInitialCardValues extends Struct {
+  /** @name MetaAthletePrimitivesInitialCardValues (21) */
+  export interface MetaAthletePrimitivesInitialCardValues extends Struct {
     readonly gold: u128;
-    readonly platinum: u128;
+    readonly silver: u128;
     readonly diamond: u128;
   }
 
-  /** @name PalletCreditsError (22) */
-  export interface PalletCreditsError extends Enum {
-    readonly isCreditAlreadyExists: boolean;
+  /** @name PalletAthletesError (22) */
+  export interface PalletAthletesError extends Enum {
+    readonly isAthleteAlreadyExists: boolean;
     readonly isCardAttributeDoesNotExist: boolean;
     readonly isCardDoesNotHaveAnOwner: boolean;
     readonly isCardIsNotForSale: boolean;
     readonly isMustBeCardOwner: boolean;
     readonly isInvalidApplicationId: boolean;
-    readonly isInvalidCreditId: boolean;
+    readonly isInvalidAthleteId: boolean;
     readonly isCardsAlreadyMinted: boolean;
     readonly isInvalidCardHash: boolean;
     readonly isInsufficientFunds: boolean;
     readonly isCouldNotDeposit: boolean;
-    readonly type: 'CreditAlreadyExists' | 'CardAttributeDoesNotExist' | 'CardDoesNotHaveAnOwner' | 'CardIsNotForSale' | 'MustBeCardOwner' | 'InvalidApplicationId' | 'InvalidCreditId' | 'CardsAlreadyMinted' | 'InvalidCardHash' | 'InsufficientFunds' | 'CouldNotDeposit';
+    readonly type: 'AthleteAlreadyExists' | 'CardAttributeDoesNotExist' | 'CardDoesNotHaveAnOwner' | 'CardIsNotForSale' | 'MustBeCardOwner' | 'InvalidApplicationId' | 'InvalidAthleteId' | 'CardsAlreadyMinted' | 'InvalidCardHash' | 'InsufficientFunds' | 'CouldNotDeposit';
   }
 
   /** @name SpConsensusAuraSr25519AppSr25519Public (24) */
@@ -963,7 +967,7 @@ declare module '@polkadot/types/lookup' {
   /** @name PalletTransactionPaymentChargeTransactionPayment (148) */
   export interface PalletTransactionPaymentChargeTransactionPayment extends Compact<u128> {}
 
-  /** @name MetaCreditRuntimeRuntime (149) */
-  export type MetaCreditRuntimeRuntime = Null;
+  /** @name MetaAthleteRuntimeRuntime (149) */
+  export type MetaAthleteRuntimeRuntime = Null;
 
 } // declare module

@@ -9,15 +9,15 @@ const WAIT_FOR_FINALIZATION = false;
 const NODE_ENDPOINT = 'ws://127.0.0.1:9944'
 // const NODE_ENDPOINT = 'ws://95.217.34.239:9944'
 
-export async function connect(): Promise<{api: ApiPromise, keyring: Keyring, alice: AddressOrPair}> {
+export async function connect(): Promise<{api: ApiPromise, keyring: Keyring, alice: AddressOrPair, endpoint: String}> {
   const wsProvider = new WsProvider(NODE_ENDPOINT);
   const api = await ApiPromise.create({ provider: wsProvider });
-
+  const endpoint = NODE_ENDPOINT;
   const keyring = new Keyring({ type: 'sr25519' });
   const alice = keyring.addFromUri('//Alice', { name: 'Alice' });
   // const alice = keyring.addFromMnemonic('better stamp learn book patrol toast enough task survey hire derive garment', { name: 'TEST' });
 
-  return {api, keyring, alice}
+  return {api, keyring, alice, endpoint}
 }
 
 export async function sendTransactionAsync(api: ApiPromise, account: AddressOrPair, extrinsic: SubmittableExtrinsic<"promise">, tag?: string): Promise<ISubmittableResult> {

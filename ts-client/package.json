@@ -11,6 +11,7 @@
     "docs": "typedoc",
     "credits:register": "ts-node ./scripts/register-credits.ts",
     "credits:mint": "ts-node ./scripts/mint-cards.ts",
+    "credits:lookup": "ts-node ./scripts/lookup-cards.ts",
     "credits:summary": "ts-node ./scripts/onchain-summary.ts",
     "credits:buy": "ts-node ./scripts/buy-card.ts",
     "credits:sell": "ts-node ./scripts/sell-card.ts"

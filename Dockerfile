@@ -1,31 +1,29 @@
-FROM rust:1.65
+FROM ubuntu:latest
 
-COPY . /blockid
-WORKDIR /blockid
+# Copy project files
+COPY . /home/appuser/polkadot
+WORKDIR /home/appuser/polkadot
 
-# Install WebAssembly tools
-RUN rustup target add wasm32-unknown-unknown
-RUN rustup override set nightly
-RUN rustup target add wasm32-unknown-unknown --toolchain nightly
 
-#Install dependenties
-RUN apt-get update
-RUN apt install cmake -y
-RUN apt install -y protobuf-compiler
-RUN apt-get -y install clang
 
-#Run build
-RUN cargo +nightly build --release
-RUN ./target/release/parachain-blockid-node build-spec --disable-default-bootnode > plain-parachain-chainspec.json
-RUN ./target/release/parachain-blockid-node build-spec --chain plain-parachain-chainspec.json --disable-default-bootnode --raw > raw-parachain-chainspec.json
-RUN ./target/release/parachain-blockid-node export-genesis-state --chain raw-parachain-chainspec.json para-2002-genesis-stat
-RUN ./target/release/parachain-blockid-node export-genesis-wasm --chain raw-parachain-chainspec.json para-2002-wasm
+RUN apt update -y && \
+    apt install -y cmake protobuf-compiler clang supervisor build-essential gcc make curl bash
 
-#Start the app
-CMD ./target/release/parachain-blockid-node --charlie --collator --force-authoring --chain raw-parachain-chainspec.json --base-path /tmp/parachain/charlie --port 40335 --ws-port 8846 -- --execution wasm --chain rococo-custom-3-raw.json --port 30345 --ws-port 9979
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+RUN ~/.cargo/bin/cargo install wasm-pack
+RUN ~/.cargo/bin/rustup install nightly-2022-11-15-x86_64-unknown-linux-gnu
+RUN ~/.cargo/bin/rustup override set nightly-2022-11-15
+RUN ~/.cargo/bin/rustup target add wasm32-unknown-unknown --toolchain nightly-2022-11-15
+RUN ~/.cargo/bin/cargo build --release
 
-#Expose ports
-EXPOSE 40335
-EXPOSE 8846
-EXPOSE 30345
-EXPOSE 9979
+# Expose ports
+EXPOSE 30333
+EXPOSE 30334                
+EXPOSE 30335
+EXPOSE 9944
+EXPOSE 9945
+EXPOSE 9946
+
+# Copy supervisord configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf

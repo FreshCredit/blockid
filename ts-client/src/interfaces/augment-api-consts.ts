@@ -5,12 +5,12 @@ import type { ApiTypes } from '@polkadot/api-base/types';
 import type { Vec, u128, u16, u32, u64, u8 } from '@polkadot/types-codec';
 import type { Codec } from '@polkadot/types-codec/types';
 import type { AccountId32 } from '@polkadot/types/interfaces/runtime';
-import type { FrameSupportWeightsRuntimeDbWeight, FrameSupportWeightsWeightToFeeCoefficient, FrameSystemLimitsBlockLength, FrameSystemLimitsBlockWeights, MetaCreditPrimitivesInitialCardValues, SpVersionRuntimeVersion } from '@polkadot/types/lookup';
+import type { FrameSupportWeightsRuntimeDbWeight, FrameSupportWeightsWeightToFeeCoefficient, FrameSystemLimitsBlockLength, FrameSystemLimitsBlockWeights, SpVersionRuntimeVersion, MetaAthletePrimitivesInitialCardValues } from '@polkadot/types/lookup';
 
 declare module '@polkadot/api-base/types/consts' {
   export interface AugmentedConsts<ApiType extends ApiTypes> {
-    credits: {
-      initialCardValues: MetaCreditPrimitivesInitialCardValues & AugmentedConst<ApiType>;
+    athletes: {
+      initialCardValues: MetaAthletePrimitivesInitialCardValues & AugmentedConst<ApiType>;
       systemAccountId: AccountId32 & AugmentedConst<ApiType>;
       /**
        * Generic const

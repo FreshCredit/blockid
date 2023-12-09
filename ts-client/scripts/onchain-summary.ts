@@ -3,7 +3,7 @@ import { connect, sendTransactionAsync } from "../src/utils";
 import { Enum, Option, u32 } from "@polkadot/types-codec"
 import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
 
-import { MetaCreditPrimitivesCard } from "@polkadot/types/lookup";
+import { MetaAthletePrimitivesCard } from "@polkadot/types/lookup";
 
 function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
@@ -11,11 +11,11 @@ function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function printCard(credit: string, hex: H256, card: MetaCreditPrimitivesCard) {
+function printCard(credit: string, hex: H256, card: MetaAthletePrimitivesCard) {
   console.log(`Card from onchain for ${credit}: (${hex.toHex()}): tier=${card.tier.toString()} value=${card.value.toNumber() / 1_000_000_000_000} ATHL`);
 }
 
-function printGetCard( credit: string, id: number, cards: Map<number, [H256, MetaCreditPrimitivesCard]>) {
+function printGetCard( credit: string, id: number, cards: Map<number, [H256, MetaAthletePrimitivesCard]>) {
   let card = cards.get(id)!;
   printCard(credit, card[0], card[1]);
 }
@@ -48,10 +48,10 @@ function printGetCard( credit: string, id: number, cards: Map<number, [H256, Met
       let platinumCards = 0;
       let diamondCards = 0;
 
-      const creditCards: Map<number, [H256, MetaCreditPrimitivesCard]> = new Map();
+      const creditCards: Map<number, [H256, MetaAthletePrimitivesCard]> = new Map();
       for (const entry of cards) {
         const key = entry[0].args[0];
-        const opt = entry[1] as Option<MetaCreditPrimitivesCard>;
+        const opt = entry[1] as Option<MetaAthletePrimitivesCard>;
         if (opt.isSome) {
           const card = opt.unwrap();
 

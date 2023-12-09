@@ -5,76 +5,83 @@
 
 export default {
   /**
-   * Lookup1: fresh_credit_primitives::Credit<sp_core::crypto::AccountId32>
+   * Lookup1: meta_athlete_primitives::Athlete<sp_core::crypto::AccountId32>
    **/
-  MetaCreditPrimitivesCredit: {
+  MetaAthletePrimitivesAthlete: {
     name: 'Bytes',
-    creditAccount: 'AccountId32',
-    creditKind: 'Bytes',
-    photo: 'Option<MetaCreditPrimitivesOffchainRef>',
+    athleteAccount: 'AccountId32',
+    weight: 'MetaAthletePrimitivesWeight',
+    height: 'MetaAthletePrimitivesHeight',
+    photo: 'Option<MetaAthletePrimitivesOffchainRef>',
     cardsMinted: 'bool'
   },
   /**
-   * Lookup6: fresh_credit_primitives::Kind
+   * Lookup6: meta_athlete_primitives::Weight
    **/
-  MetaCreditPrimitivesKind: {
-    kind: 'u32'
+  MetaAthletePrimitivesWeight: {
+    grams: 'u32'
   },
   /**
-   * Lookup10: fresh_credit_primitives::OffchainRef
+   * Lookup8: meta_athlete_primitives::Height
    **/
-  MetaCreditPrimitivesOffchainRef: {
+  MetaAthletePrimitivesHeight: {
+    millimeters: 'u32'
+  },
+  /**
+   * Lookup10: meta_athlete_primitives::OffchainRef
+   **/
+  MetaAthletePrimitivesOffchainRef: {
     _alias: {
       hash_: 'hash'
     },
     hash_: 'H256'
   },
   /**
-   * Lookup13: fresh_credit_primitives::Card<sp_core::crypto::AccountId32, Balance>
+   * Lookup13: meta_athlete_primitives::Card<sp_core::crypto::AccountId32, Balance>
    **/
-  MetaCreditPrimitivesCard: {
+  MetaAthletePrimitivesCard: {
     owner: 'Option<AccountId32>',
-    id: 'MetaCreditPrimitivesCardId',
-    tier: 'MetaCreditPrimitivesCreditCardClass',
+    id: 'MetaAthletePrimitivesCardId',
+    tier: 'MetaAthletePrimitivesAthleteCardClass',
     value: 'u128',
     isOnMarket: 'bool'
   },
   /**
-   * Lookup16: fresh_credit_primitives::CardId
+   * Lookup16: meta_athlete_primitives::CardId
    **/
-  MetaCreditPrimitivesCardId: {
-    creditId: 'u64',
+  MetaAthletePrimitivesCardId: {
+    athleteId: 'u64',
     instanceId: 'u32'
   },
   /**
-   * Lookup17: fresh_credit_primitives::CreditCardClass
+   * Lookup17: meta_athlete_primitives::AthleteCardClass
    **/
-  MetaCreditPrimitivesCreditCardClass: {
-    _enum: ['Gold', 'Platinum', 'Diamond']
+  MetaAthletePrimitivesAthleteCardClass: {
+    _enum: ['Gold', 'Silver', 'Diamond']
   },
   /**
-   * Lookup18: fresh_credit_primitives::CreditApplication<sp_core::crypto::AccountId32>
+   * Lookup18: meta_athlete_primitives::AthleteApplication<sp_core::crypto::AccountId32>
    **/
-  MetaCreditPrimitivesCreditApplication: {
+  MetaAthletePrimitivesAthleteApplication: {
     name: 'Bytes',
     applicantAccount: 'AccountId32',
-    creditKind: 'Bytes',
-    photo: 'Option<MetaCreditPrimitivesOffchainRef>'
+    weight: 'MetaAthletePrimitivesWeight',
+    height: 'MetaAthletePrimitivesHeight',
+    photo: 'Option<MetaAthletePrimitivesOffchainRef>'
   },
   /**
-   * Lookup19: pallet_credits::pallet::Call<T>
+   * Lookup19: pallet_athletes::pallet::Call<T>
    **/
-  PalletCreditsCall: {
+  PalletAthletesCall: {
     _enum: {
-      submit_credit_application: {
-        application: 'MetaCreditPrimitivesCreditApplication',
+      submit_athlete_application: {
+        application: 'MetaAthletePrimitivesAthleteApplication',
       },
       approve_application: {
-        creditId: 'u64',
+        athleteId: 'u64',
       },
       mint_cards: {
-        creditId: 'u64',
-        cardInfo: 'MetaCreditPrimitivesCreditApplication',   
+        athleteId: 'u64',
       },
       buy_card: {
         cardHash: 'H256',
@@ -85,50 +92,49 @@ export default {
     }
   },
   /**
-   * Lookup20: pallet_credits::pallet::Event<T>
+   * Lookup20: pallet_athletes::pallet::Event<T>
    **/
-  PalletCreditsEvent: {
+  PalletAthletesEvent: {
     _enum: {
-      CreditApplicationSubmitted: {
+      AthleteApplicationSubmitted: {
         id: 'u64',
-        application: 'MetaCreditPrimitivesCreditApplication',
+        application: 'MetaAthletePrimitivesAthleteApplication',
       },
-      CreditApplicationApproved: {
+      AthleteApplicationApproved: {
         id: 'u64',
       },
       CardMinted: {
         cardHash: 'H256',
-        cardId: 'MetaCreditPrimitivesCardId',
-        cardInfo: 'MetaCreditPrimitivesCreditApplication',   
-        tier: 'MetaCreditPrimitivesCreditCardClass',
+        cardId: 'MetaAthletePrimitivesCardId',
+        tier: 'MetaAthletePrimitivesAthleteCardClass',
       },
       CardSold: {
         cardHash: 'H256',
-        cardId: 'MetaCreditPrimitivesCardId',
+        cardId: 'MetaAthletePrimitivesCardId',
         who: 'AccountId32',
         value: 'u128',
       },
       CardBought: {
         cardHash: 'H256',
-        cardId: 'MetaCreditPrimitivesCardId',
+        cardId: 'MetaAthletePrimitivesCardId',
         who: 'AccountId32',
         value: 'u128'
       }
     }
   },
   /**
-   * Lookup21: fresh_credit_primitives::InitialCardValues<Balance>
+   * Lookup21: meta_athlete_primitives::InitialCardValues<Balance>
    **/
-  MetaCreditPrimitivesInitialCardValues: {
+  MetaAthletePrimitivesInitialCardValues: {
     gold: 'u128',
-    platinum: 'u128',
+    silver: 'u128',
     diamond: 'u128'
   },
   /**
-   * Lookup22: pallet_credits::pallet::Error<T>
+   * Lookup22: pallet_athletes::pallet::Error<T>
    **/
-  PalletCreditsError: {
-    _enum: ['CreditAlreadyExists', 'CardAttributeDoesNotExist', 'CardDoesNotHaveAnOwner', 'CardIsNotForSale', 'MustBeCardOwner', 'InvalidApplicationId', 'InvalidCreditId', 'CardsAlreadyMinted', 'InvalidCardHash', 'InsufficientFunds', 'CouldNotDeposit']
+  PalletAthletesError: {
+    _enum: ['AthleteAlreadyExists', 'CardAttributeDoesNotExist', 'CardDoesNotHaveAnOwner', 'CardIsNotForSale', 'MustBeCardOwner', 'InvalidApplicationId', 'InvalidAthleteId', 'CardsAlreadyMinted', 'InvalidCardHash', 'InsufficientFunds', 'CouldNotDeposit']
   },
   /**
    * Lookup24: sp_consensus_aura::sr25519::app_sr25519::Public
@@ -567,7 +573,7 @@ export default {
     }
   },
   /**
-   * Lookup94: frame_system::EventRecord<fresh_credit_runtime::Event, primitive_types::H256>
+   * Lookup94: frame_system::EventRecord<meta_athlete_runtime::Event, primitive_types::H256>
    **/
   FrameSystemEventRecord: {
     phase: 'FrameSystemPhase',
@@ -915,7 +921,7 @@ export default {
    **/
   PalletTransactionPaymentChargeTransactionPayment: 'Compact<u128>',
   /**
-   * Lookup149: fresh_credit_runtime::Runtime
+   * Lookup149: meta_athlete_runtime::Runtime
    **/
-  MetaCreditRuntimeRuntime: 'Null'
+  MetaAthleteRuntimeRuntime: 'Null'
 };

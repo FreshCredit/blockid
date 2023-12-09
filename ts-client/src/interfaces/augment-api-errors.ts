@@ -5,8 +5,8 @@ import type { ApiTypes } from '@polkadot/api-base/types';
 
 declare module '@polkadot/api-base/types/errors' {
   export interface AugmentedErrors<ApiType extends ApiTypes> {
-    credits: {
-      CreditAlreadyExists: AugmentedError<ApiType>;
+    athletes: {
+      AthleteAlreadyExists: AugmentedError<ApiType>;
       CardAttributeDoesNotExist: AugmentedError<ApiType>;
       CardDoesNotHaveAnOwner: AugmentedError<ApiType>;
       CardIsNotForSale: AugmentedError<ApiType>;
@@ -14,7 +14,7 @@ declare module '@polkadot/api-base/types/errors' {
       CouldNotDeposit: AugmentedError<ApiType>;
       InsufficientFunds: AugmentedError<ApiType>;
       InvalidApplicationId: AugmentedError<ApiType>;
-      InvalidCreditId: AugmentedError<ApiType>;
+      InvalidAthleteId: AugmentedError<ApiType>;
       InvalidCardHash: AugmentedError<ApiType>;
       MustBeCardOwner: AugmentedError<ApiType>;
       /**

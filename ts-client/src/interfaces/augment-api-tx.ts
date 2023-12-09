@@ -5,16 +5,16 @@ import type { ApiTypes } from '@polkadot/api-base/types';
 import type { Bytes, Compact, Vec, bool, u128, u32, u64 } from '@polkadot/types-codec';
 import type { AnyNumber, ITuple } from '@polkadot/types-codec/types';
 import type { Call, H256, MultiAddress, Perbill } from '@polkadot/types/interfaces/runtime';
-import type { MetaCreditPrimitivesCreditApplication, SpCoreVoid, SpFinalityGrandpaEquivocationProof } from '@polkadot/types/lookup';
+import type { SpCoreVoid, SpFinalityGrandpaEquivocationProof, MetaAthletePrimitivesAthleteApplication } from '@polkadot/types/lookup';
 
 declare module '@polkadot/api-base/types/submittable' {
   export interface AugmentedSubmittables<ApiType extends ApiTypes> {
-    credits: {
-      approveApplication: AugmentedSubmittable<(creditId: u64 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [u64]>;
+    athletes: {
+      approveApplication: AugmentedSubmittable<(athleteId: u64 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [u64]>;
       buyCard: AugmentedSubmittable<(cardHash: H256 | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [H256]>;
-      mintCards: AugmentedSubmittable<(creditId: u64 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [u64]>;
+      mintCards: AugmentedSubmittable<(athleteId: u64 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [u64]>;
       sellCard: AugmentedSubmittable<(cardHash: H256 | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [H256]>;
-      submitCreditApplication: AugmentedSubmittable<(application: MetaCreditPrimitivesCreditApplication | { name?: any; applicantAccount?: any; creditKind?: any; photo?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [MetaCreditPrimitivesCreditApplication]>;
+      submitAthleteApplication: AugmentedSubmittable<(application: MetaAthletePrimitivesAthleteApplication | { name?: any; applicantAccount?: any; weight?: any; height?: any; photo?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [MetaAthletePrimitivesAthleteApplication]>;
       /**
        * Generic tx
        **/
